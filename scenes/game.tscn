@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://bduw5gb057ino"]
+
+[ext_resource type="Script" uid="uid://bce6sj6kvwsh" path="res://scripts/game.gd" id="1_5vnjt"]
+[ext_resource type="PackedScene" uid="uid://cqpatfifsn3sg" path="res://scenes/player.tscn" id="2_n47hv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7nvpe"]
+size = Vector2(1024, 55.3125)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_akqs3"]
+size = Vector2(64, 528)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_71pn1"]
+
+[node name="Game" type="Node2D" unique_id=764461739]
+script = ExtResource("1_5vnjt")
+shake_decay_rate = 5.0
+
+[node name="Background" type="Polygon2D" parent="." unique_id=1737207086]
+z_index = -50
+color = Color(0, 0.0705882, 0.0980392, 1)
+polygon = PackedVector2Array(-832, -896, -832, 1408, 2176, 1408, 2176, -896)
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Background" unique_id=213034938]
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Background/StaticBody2D2" unique_id=104115080]
+position = Vector2(576, 27.6563)
+shape = SubResource("RectangleShape2D_7nvpe")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Background" unique_id=1341677865]
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Background/StaticBody2D" unique_id=479791274]
+position = Vector2(576, 611)
+shape = SubResource("RectangleShape2D_7nvpe")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Background" unique_id=924981772]
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Background/StaticBody2D3" unique_id=51769844]
+position = Vector2(32, 320)
+shape = SubResource("RectangleShape2D_akqs3")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="Background" unique_id=607911070]
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Background/StaticBody2D4" unique_id=1994794621]
+position = Vector2(1120, 320)
+shape = SubResource("RectangleShape2D_akqs3")
+
+[node name="Ground" type="Polygon2D" parent="." unique_id=1840164076]
+z_index = -49
+color = Color(0.913725, 0.847059, 0.65098, 1)
+polygon = PackedVector2Array(64, 56, 64, 320, 64, 584, 1088, 584, 1088, 56)
+
+[node name="Player" parent="." unique_id=671296630 instance=ExtResource("2_n47hv")]
+
+[node name="HitArea" type="Area2D" parent="Player" unique_id=1419183048]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/HitArea" unique_id=616930260]
+shape = SubResource("CircleShape2D_71pn1")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1960908558]
+position = Vector2(576, 323)
+
+[node name="CameraSlowMoTimer" type="Timer" parent="." unique_id=811787902]
+wait_time = 0.1
+one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1710110063]
+process_mode = 3
+
+[node name="GameOverPanel" type="Panel" parent="CanvasLayer" unique_id=1384081472]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GameOverPanel" unique_id=1358324286]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/GameOverPanel/VBoxContainer" unique_id=2001220988]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Game Over!"
+horizontal_alignment = 1
+
+[node name="ReplayButton" type="Button" parent="CanvasLayer/GameOverPanel/VBoxContainer" unique_id=357737059]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Retry"
+icon_alignment = 1
+
+[node name="MainButton" type="Button" parent="CanvasLayer/GameOverPanel/VBoxContainer" unique_id=1638647763]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Main"
+icon_alignment = 1
+
+[connection signal="body_entered" from="Player/HitArea" to="Player" method="_on_hit_area_body_entered"]
+[connection signal="timeout" from="CameraSlowMoTimer" to="." method="_on_camera_slow_mo_timer_timeout"]
+[connection signal="pressed" from="CanvasLayer/GameOverPanel/VBoxContainer/ReplayButton" to="." method="_on_replay_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/GameOverPanel/VBoxContainer/MainButton" to="." method="_on_main_button_pressed"]
